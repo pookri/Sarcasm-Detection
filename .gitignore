@@ -1,1 +1,3 @@
 .directory
+nltk_data/
+.vscode
