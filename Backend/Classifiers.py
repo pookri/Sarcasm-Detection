@@ -105,7 +105,7 @@ features = ['User mention', 'Exclamation', 'Question mark', 'Ellipsis', 'Interje
 print ("Model: " + "LR")
 for feature in features:
     tiny_data = data[[feature, 'label']]
-    Acc, F1, P, R = SVM_CV(tiny_data)
+    Acc, F1, P, R = NN_CV(tiny_data)
     print (feature)
     print ("Acc: "+str(Acc)+" F1: "+str(F1)+ " P: "+str(P)+" R: "+str(R))
 """

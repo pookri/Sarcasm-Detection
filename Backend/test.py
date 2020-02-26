@@ -6,6 +6,7 @@ import numpy as np
 from nltk.stem import PorterStemmer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import pandas as pd
+import emoji
 ps = PorterStemmer()
 sid = SentimentIntensityAnalyzer()
 DATASET_FILE_PATH = os.getcwd() + "/Dataset/dataset.csv"
@@ -15,12 +16,39 @@ def read_data(filename):
     data = pd.read_csv(filename, header=None, encoding="utf-8", names=["Index", "Label", "Tweet"])
     # data = data[data["Index"] > 76750]
     return data
-
+"""
 def getEmojiSentiment(tweet, emoji_count_list=os.getcwd() + "/Dataset/Emoji_list.txt"):
     # Feature - Emoji [Compared with a list of Unicodes and common emoticons]
     emoji_sentiment = 0
     emoji_count_dict = dict(zip(emoji_count_list, np.zeros(len(emoji_count_list))))
     for e in emoji_count_dict.keys():
+        if e in tweet:
+            if e in emoji_count_list:
+                emoji_count_dict.update({e: tweet.count(e)})
+            emoji_sentiment += emoji_count_dict[e]*tweet.count(e)
+    if sum(emoji_count_dict.values()) > 0:
+        emoji_sentiment = (float(emoji_sentiment) / float(sum(emoji_count_dict.values())))
+    return emoji_sentiment,emoji_count_dict
+
+
+def getEmojiSentiment(tweet, emoji_count_list = constantly.popular_emoji):
+    # Feature - Emoji [Compared with a list of Unicodes and common emoticons]
+    emoji_sentiment = 0
+    emoji_count_dict = dict(zip(emoji_count_list, np.zeros(len(emoji_count_list))))
+    for e in constantly.emoji_sentiment.keys():
+        if e in tweet:
+            if e in emoji_count_list:
+                emoji_count_dict.update({e: tweet.count(e)})
+            emoji_sentiment += constantly.emoji_sentiment[e]*tweet.count(e)
+    if sum(emoji_count_dict.values()) > 0:
+        emoji_sentiment = (float(emoji_sentiment) / float(sum(emoji_count_dict.values())))
+    return emoji_sentiment, emoji_count_dict
+"""
+def getEmojiSentiment(tweet, emoji_count_list=emoji.UNICODE_EMOJI):
+    # Feature - Emoji [Compared with a list of Unicodes and common emoticons]
+    emoji_sentiment = 0
+    emoji_count_dict = dict(zip(emoji_count_list, np.zeros(len(emoji_count_list))))
+    for e in  emoji.UNICODE_EMOJI.keys():
         if e in tweet:
             if e in emoji_count_list:
                 emoji_count_dict.update({e: tweet.count(e)})
@@ -55,8 +83,8 @@ for t in tweets:
 f=open("Hashtags.txt",'w')
 f.write(str(emoji_sentiment))
 print(sentimentscore)
-"""
 
+"""
 def hashtag_sentiment(tweet):
     hash_tag = (re.findall("#([a-zA-Z0-9]{1,25})", tweet))
     f.write(hash_tag)
@@ -85,6 +113,9 @@ print(normalize(user_mention_count) )
 
 import emoji
 import re
+
+emoji_list= emoji.UNICODE_EMOJI.keys()
+print(emoji_list)
 
 test_list=['🤔 🙈 me así,bla es,se 😌 ds 💕👭👙']
 

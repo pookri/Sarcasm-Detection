@@ -358,7 +358,7 @@ def main():
         positive_intensifier_count.append(x[0])
         negative_intensifier_count.append(x[1])
         x = getEmojiSentiment(t)
-        #emoji_count_list.append(x[1])
+        emoji_count_list.append(x[1])
         emoji_sentiment.append(x[0])
         skip_bigrams_sentiment.append(skip_grams(tokens, 2, 0))
         skip_trigrams_sentiment.append(skip_grams(tokens, 3, 0))
