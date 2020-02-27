@@ -1,2 +1,4 @@
+.vscode
+.idea
 .directory
 nltk_data/*
