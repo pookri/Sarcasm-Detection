@@ -1,4 +1,4 @@
-Model SVM:
+Model NN:
 User mention
 Acc: 51.10352999388012 F1: 0.21 P: 0.32 R: 0.13
 Exclamation

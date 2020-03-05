@@ -1,4 +1,4 @@
-Model LR:
+Model RF:
 User mention
 Acc: 16.919491139207544 F1: 0.23 P: 0.12 R: 0.21
 Exclamation
