@@ -102,17 +102,6 @@ features = ['User mention', 'Exclamation', 'Question mark', 'Ellipsis', 'Interje
 
 # Calculate the accuracies for the required model  'UpperCase',
 
-print ("Model: " + "LR")
-f1=open("Logestic Regression.txt","w")
-for feature in features:
-    tiny_data = data[[feature, 'label']]
-    Acc, F1, P, R = LR_CV(tiny_data)
-    f1.write("\n")
-    f1.write(feature)
-    f1.write("\n")
-    f1.write("Acc: "+str(Acc)+" F1: "+str(F1)+ " P: "+str(P)+" R: "+str(R))
-    #f1.close()
-
 print ("Model: " + "SVM")
 f1=open("Support_Vector_Machine.txt","w")
 for feature in features:
@@ -133,7 +122,7 @@ for feature in features:
     f1.write("\n")
     f1.write("Acc: "+str(Acc)+" F1: "+str(F1)+ " P: "+str(P)+" R: "+str(R))
 
-print ("Model: " + "NN")
+print ("Model: " + "SVM")
 f1=open("Nerual_Network.txt","w")
 for feature in features:
     tiny_data = data[[feature, 'label']]
@@ -142,6 +131,7 @@ for feature in features:
     f1.write(feature)
     f1.write("\n")
     f1.write("Acc: "+str(Acc)+" F1: "+str(F1)+ " P: "+str(P)+" R: "+str(R))
+    
 
 print ("Model: " + "RF")
 f1=open("Random_Forest.txt","w")
@@ -152,3 +142,14 @@ for feature in features:
     f1.write(feature)
     f1.write("\n")
     f1.write("Acc: "+str(Acc)+" F1: "+str(F1)+ " P: "+str(P)+" R: "+str(R))
+
+print ("Model: " + "LR")
+f1=open("Logestic Regression.txt","w")
+for feature in features:
+    tiny_data = data[[feature, 'label']]
+    Acc, F1, P, R = LR_CV(tiny_data)
+    f1.write("\n")
+    f1.write(feature)
+    f1.write("\n")
+    f1.write("Acc: "+str(Acc)+" F1: "+str(F1)+ " P: "+str(P)+" R: "+str(R))
+    #f1.close()
