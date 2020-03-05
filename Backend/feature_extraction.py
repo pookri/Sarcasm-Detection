@@ -30,20 +30,13 @@ sid = SentimentIntensityAnalyzer()
 ps = PorterStemmer()
 lemm = WordNetLemmatizer()
 
-#FEATURE_LIST_CSV_FILE_PATH = os.getcwd() + "/Dataset/feature_list.csv"
+FEATURE_LIST_CSV_FILE_PATH = os.getcwd() + "/Dataset/feature_list.csv"
 DATASET_FILE_PATH = os.getcwd() + "/Dataset/dataset.csv"
-print(DATASET_FILE_PATH)
-df = pd.read_csv("Dataset/Interjection_list.txt", delimiter='\n')
-df.to_csv('Interjection.csv')
 stopwords = stopwords.words('english')
-"""
 interjections=os.getcwd()+ "/Dataset/Interjection_list.txt"
-print(interjections)
 intensifier_list=os.getcwd() + "/Dataset/Intensifier_list.txt"
-print(intensifier_list)
 emoji_count_list = os.getcwd() + "/Dataset/Emoji_list.txt"
-print(emoji_count_list)
-"""
+
 # Read Data in Dataframe
 
 def read_data(filename):
@@ -127,14 +120,13 @@ def getEmojiSentiment(tweet, emoji_count_list=os.getcwd() + "/Dataset/Emoji_list
         emoji_sentiment = (float(emoji_sentiment) / float(sum(emoji_count_dict.values())))
     return emoji_sentiment, emoji_count_dict
 # Counts the interjections in the tweet
-"""
+
 def interjections_counter(tweet):
     interjection_count = 0
     for interj in interjections:
-        #print(interj)
-        interjection_count += tweet.count(interj)
+        interjection_count += tweet.lower().count(interj)
     return interjection_count
-"""
+
 # Counts the capital words in the tweet
 """
 def captitalWords_counter(tokens):
@@ -197,7 +189,7 @@ def POS_count(tokens):
         if Tagged[i][1] in verbs:
             verb_count += 1
     return round(float(noun_count) / float(no_words),2), round(float(verb_count) / float(no_words),2)
-"""
+
 # Counts the intensifiers in a tweet
 
 def intensifier_counter(tokens):
@@ -212,7 +204,7 @@ def intensifier_counter(tokens):
                 if (ss_in["pos"] == 1.0):
                     posC += 1
     return posC, negC
-"""
+
 # Finds the most common bigrams and skipgrams(skip 1/2 grams in a tweet )
 
 def skip_grams(tokens, n, k):
@@ -235,16 +227,16 @@ def find_common_unigrams(data_set):
     unigram_non_sarcastic_dict = {}
     sarcastic_unigram_list = []
     non_sarcastic_unigram_list = []
-    #tweets = data_set['Tweet'].values
-    #labels = data_set['Label'].values
-    #for i, tweet in enumerate(tweets):
-        #tokens = clean_data(tweet, lemmatize=True, remove_punctuations=True, remove_stop_words=True)
-    for words in data_set:
-            if words in unigram_sarcastic_dict.keys(): #and int(labels[i]) == 1:
+    tweets = data_set['Tweet'].values
+    labels = data_set['Label'].values
+    for i, tweet in enumerate(tweets):
+        tokens = clean_data(tweet, lemmatize=True, remove_punctuations=True, remove_stop_words=True)
+        for words in tokens:
+            if words in unigram_sarcastic_dict.keys() and int(labels[i]) == 1:
                 unigram_sarcastic_dict[words] += 1
             else:
                 unigram_sarcastic_dict.update({words: 1})
-            if words in unigram_non_sarcastic_dict.keys(): # and int(labels[i]) == 0:
+            if words in unigram_non_sarcastic_dict.keys() and int(labels[i]) == 0:
                 unigram_non_sarcastic_dict[words] += 1
             else:
                 unigram_non_sarcastic_dict.update({words: 1})
@@ -306,13 +298,13 @@ def normalize( array):
     return array
 
 
-def getallfeatures(sentence):
+def main():
     
     # Read data and initialize feature lists
     
-    #data_set = read_data(DATASET_FILE_PATH)
-    #label = list(data_set['Label'].values)
-    #tweets = list(data_set['Tweet'].values)
+    data_set = read_data(DATASET_FILE_PATH)
+    label = list(data_set['Label'].values)
+    tweets = list(data_set['Tweet'].values)
     user_mention_count = []
     exclamation_count = []
     questionmark_count = []
@@ -339,91 +331,65 @@ def getallfeatures(sentence):
     emoji_count_list = []
 
 
-    COMMON_UNIGRAMS = find_common_unigrams(sentence)
-    #print(COMMON_UNIGRAMS)
+    COMMON_UNIGRAMS = find_common_unigrams(data_set)
+    print(COMMON_UNIGRAMS)
 
     # For every tweet, extract all the features and append to corresponding list
     
-    #for t in tweets:
-    hashtag_sentiment_score.append(0)
-    tokens = clean_data(sentence)
-    print(user_mentions(sentence))
-    user_mention_count.append(user_mentions(sentence))
-    p = punctuations_counter(sentence, ['!', '?', '...'])
-    exclamation_count.append(p['!'])
-    questionmark_count.append(p['?'])
-    ellipsis_count.append(p['...'])
-    interjection_count.append(interjections_counter(sentence))
-    #uppercase_count.append(captitalWords_counter(tokens))
-    repeatLetter_counts.append(repeatLetterWords_counter(sentence))
-    sentimentscore.append(getSentimentScore(sentence))
-    x = polarityFlip_counter(tokens)
-    positive_word_count.append(x[0])
-    negative_word_count.append(x[1])
-    polarityFlip_count.append(x[-1])
-    x = POS_count(tokens)
-    noun_count.append(x[0])
-    verb_count.append(x[1])
-    x = intensifier_counter(tokens)
-    positive_intensifier_count.append(x[0])
-    negative_intensifier_count.append(x[1])
-    x = getEmojiSentiment(sentence)
-    emoji_count_list.append(x[1])
-    emoji_sentiment.append(x[0])
-    skip_bigrams_sentiment.append(skip_grams(tokens, 2, 0))
-    skip_trigrams_sentiment.append(skip_grams(tokens, 3, 0))
-    skip_grams_sentiment.append(skip_grams(tokens, 2, 2))
-    unigrams_count.append(unigrams_counter(tokens, COMMON_UNIGRAMS))
-    passive_aggressive_count.append(passive_aggressive_counter(sentence))
+    for t in tweets:
+        hashtag_sentiment_score.append(0)
+        tokens = clean_data(t)
+        user_mention_count.append(user_mentions(t))
+        p = punctuations_counter(t, ['!', '?', '...'])
+        exclamation_count.append(p['!'])
+        questionmark_count.append(p['?'])
+        ellipsis_count.append(p['...'])
+        interjection_count.append(interjections_counter(t))
+        #uppercase_count.append(captitalWords_counter(tokens))
+        repeatLetter_counts.append(repeatLetterWords_counter(t))
+        sentimentscore.append(getSentimentScore(t))
+        x = polarityFlip_counter(tokens)
+        positive_word_count.append(x[0])
+        negative_word_count.append(x[1])
+        polarityFlip_count.append(x[-1])
+        x = POS_count(tokens)
+        noun_count.append(x[0])
+        verb_count.append(x[1])
+        x = intensifier_counter(tokens)
+        positive_intensifier_count.append(x[0])
+        negative_intensifier_count.append(x[1])
+        x = getEmojiSentiment(t)
+        emoji_count_list.append(x[1])
+        emoji_sentiment.append(x[0])
+        skip_bigrams_sentiment.append(skip_grams(tokens, 2, 0))
+        skip_trigrams_sentiment.append(skip_grams(tokens, 3, 0))
+        skip_grams_sentiment.append(skip_grams(tokens, 2, 2))
+        unigrams_count.append(unigrams_counter(tokens, COMMON_UNIGRAMS))
+        passive_aggressive_count.append(passive_aggressive_counter(t))
         
-    if (sentimentscore[-1] < 0 and emoji_sentiment[-1] > 0) or (sentimentscore[-1] > 0 and emoji_sentiment[-1] < 0):
-        emoji_tweet_flip.append(1)
-    else:
-        emoji_tweet_flip.append(0)
+        if (sentimentscore[-1] < 0 and emoji_sentiment[-1] > 0) or (sentimentscore[-1] > 0 and emoji_sentiment[-1] < 0):
+            emoji_tweet_flip.append(1)
+        else:
+            emoji_tweet_flip.append(0)
+           
+    # Creates a list of list of features  """normalize(uppercase_count)"""
     
-    feature_label = list(zip(user_mention_count, normalize(exclamation_count),
-                        normalize(questionmark_count), normalize(ellipsis_count), interjection_count,
-                        normalize(repeatLetter_counts), sentimentscore,
-                        normalize(positive_word_count), normalize(negative_word_count), normalize(polarityFlip_count),
-                        noun_count, verb_count, normalize(positive_intensifier_count),
-                        normalize(negative_intensifier_count), skip_bigrams_sentiment, skip_trigrams_sentiment,
-                        skip_grams_sentiment, normalize(passive_aggressive_count), emoji_sentiment, emoji_tweet_flip,
-                        hashtag_sentiment_score))
-    """
-    feature_label = list(zip(normalize(user_mention_count), normalize(exclamation_count),
+    feature_label = zip(label, normalize(user_mention_count), normalize(exclamation_count),
                         normalize(questionmark_count), normalize(ellipsis_count), normalize(interjection_count),
                         normalize(repeatLetter_counts), sentimentscore,
                         normalize(positive_word_count), normalize(negative_word_count), normalize(polarityFlip_count),
                         noun_count, verb_count, normalize(positive_intensifier_count),
                         normalize(negative_intensifier_count), skip_bigrams_sentiment, skip_trigrams_sentiment,
                         skip_grams_sentiment, normalize(passive_aggressive_count), emoji_sentiment, emoji_tweet_flip,
-                        hashtag_sentiment_score))
+                        hashtag_sentiment_score)
 
     # Headers for the new feature list "UpperCase"
    
-    headers = ["User mention", "Exclamation", "Question mark", "Ellipsis", "Interjection",
+    headers = ["label", "User mention", "Exclamation", "Question mark", "Ellipsis", "Interjection",
                "RepeatLetters", "SentimentScore", "positive word count", "negative word count", "polarity flip",
                "Nouns", "Verbs", "PositiveIntensifier", "NegativeIntensifier", "Bigrams", "Trigram", "Skipgrams",
                "Passive aggressive count", "Emoji Sentiment", "Emoji_tweet_polarity flip", "hashtag_polarity"]
-    
-    feature={}
-    l=len(feature_label)
-    for i in range(0,l):
-        feature[headers[i]]=feature_label[i]
-    print(feature)
-       """     
-    print(feature_label)
-    # Creates a list of list of features  """normalize(uppercase_count)"""
-    
-        #feature.key=headers
-    #feature.values=feature_label
-    #return feature
 
-sentence="@ChrisGreenBean I thought you speak too about a guitar pedal, not a car pedal:-)"
-getallfeatures(sentence)
-
-
-"""
     # Writing headers to the new .csv file
     
     with open(FEATURE_LIST_CSV_FILE_PATH, "w") as header:
@@ -439,5 +405,4 @@ getallfeatures(sentence)
 
 
 if __name__ == "__main__":
-    getallfeatures(sentence)
-"""
+    main()
