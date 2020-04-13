@@ -45,9 +45,9 @@ def getSarcasmScore(sentence):
     return percentage
 
 while True:
-    print ("enter the sentence to get sarcastic score or type exit to quit")
-    data = str(input())
-    if data == "exit" or "quit":
+    print("Enter the sentence to get sarcastic score or type exit to quit")
+    data = input()
+    if data == "exit":
         break
     else:
-        print(getSarcasmScore(data))
+    	print "Sarcastic Score:",getSarcasmScore(data)
